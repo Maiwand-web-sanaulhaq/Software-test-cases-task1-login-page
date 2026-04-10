@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SWEN301 – Login Page Test Cases</title>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Source Sans 3', sans-serif;
+      background: #f0f4f8;
+      min-height: 100vh;
+      padding: 32px 16px;
+    }
+
+    h1.page-title {
+      text-align: center;
+      color: #1a73c8;
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 32px;
+    }
+
+    .layout {
+      display: flex;
+      gap: 32px;
+      max-width: 1100px;
+      margin: 0 auto;
+      align-items: flex-start;
+      flex-wrap: wrap;
+    }
+
+    /* ── LOGIN FORM ── */
+    .login-box {
+      background: #ffffff;
+      border-radius: 10px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.10);
+      padding: 36px 32px;
+      width: 340px;
+      flex-shrink: 0;
+    }
+
+    .login-box h2 {
+      text-align: center;
+      color: #1a3a5c;
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 24px;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: #444;
+      margin-bottom: 6px;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1.5px solid #c8d8ec;
+      border-radius: 6px;
+      font-size: 14px;
+      font-family: inherit;
+      outline: none;
+      transition: border 0.2s;
+      background: #f8fbff;
+    }
+
+    .form-group input:focus {
+      border-color: #1a73c8;
+      background: #fff;
+    }
+
+    .btn-login {
+      width: 100%;
+      padding: 11px;
+      background: #1a73c8;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: background 0.2s;
+      font-family: inherit;
+    }
+
+    .btn-login:hover { background: #1560a8; }
+
+    .msg {
+      margin-top: 14px;
+      padding: 10px 14px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 600;
+      text-align: center;
+      display: none;
+    }
+
+    .msg.success { background: #d4edda; color: #1a7a3a; border: 1px solid #a3d9b1; display: block; }
+    .msg.error   { background: #f8d7da; color: #c0392b; border: 1px solid #f1aeb5; display: block; }
+    .msg.warning { background: #fff3cd; color: #c87000; border: 1px solid #f5c842; display: block; }
+
+    .credentials-hint {
+      margin-top: 16px;
+      background: #eaf2fb;
+      border-radius: 6px;
+      padding: 10px 14px;
+      font-size: 12px;
+      color: #1a3a5c;
+    }
+
+    .credentials-hint strong { display: block; margin-bottom: 4px; color: #1a73c8; }
+
+    /* ── TEST CASES TABLE ── */
+    .test-section {
+      flex: 1;
+      min-width: 300px;
+    }
+
+    .test-section h2 {
+      color: #1a3a5c;
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 14px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      background: white;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    }
+
+    thead tr { background: #1a73c8; }
+    thead th {
+      color: white;
+      font-weight: 700;
+      padding: 12px 12px;
+      text-align: center;
+      border: 1px solid #1560a8;
+      font-size: 13px;
+    }
+
+    tbody tr:nth-child(even) { background: #dce8f7; }
+    tbody tr:nth-child(odd)  { background: #ffffff; }
+
+    td {
+      padding: 11px 12px;
+      border: 1px solid #c8d8ec;
+      vertical-align: middle;
+      color: #2d2d2d;
+      line-height: 1.5;
+    }
+
+    td.tc-id {
+      font-weight: 700;
+      text-align: center;
+      color: #1a3a5c;
+      white-space: nowrap;
+    }
+
+    td.steps ol { padding-left: 16px; }
+    td.steps ol li { margin-bottom: 2px; }
+
+    .badge {
+      display: inline-block;
+      font-weight: 700;
+      font-size: 12px;
+      padding: 5px 10px;
+      border-radius: 4px;
+      white-space: nowrap;
+    }
+
+    .badge.not-executed { background: #fff3cd; color: #c87000; border: 1px solid #f5c842; }
+    .badge.pass         { background: #d4edda; color: #1a7a3a; border: 1px solid #a3d9b1; }
+    .badge.fail         { background: #f8d7da; color: #c0392b; border: 1px solid #f1aeb5; }
+
+    .run-btn {
+      display: block;
+      margin: 18px 0 0 auto;
+      padding: 10px 24px;
+      background: #1a73c8;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+      transition: background 0.2s;
+    }
+
+    .run-btn:hover { background: #1560a8; }
+
+    .reset-btn {
+      display: block;
+      margin: 10px 0 0 auto;
+      padding: 8px 20px;
+      background: #6c757d;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      transition: background 0.2s;
+    }
+
+    .reset-btn:hover { background: #545b62; }
+
+    .summary {
+      margin-top: 14px;
+      padding: 12px 16px;
+      background: #eaf2fb;
+      border-radius: 6px;
+      font-size: 14px;
+      color: #1a3a5c;
+      display: none;
+    }
+
+    .summary span { font-weight: 700; }
+    .summary .s-pass  { color: #1a7a3a; }
+    .summary .s-fail  { color: #c0392b; }
+  </style>
+</head>
+<body>
+
+<h1 class="page-title">SWEN301 – Software Quality and Assurance Testing</h1>
+<p style="text-align:center; color:#555; font-size:14px; margin-top:-20px; margin-bottom:28px;">Login Page &amp; Test Cases</p>
+
+<div class="layout">
+
+  <!-- LOGIN FORM -->
+  <div class="login-box">
+    <h2>🔐 Login</h2>
+    <div class="form-group">
+      <label for="username">Username</label>
+      <input type="text" id="username" placeholder="Enter username" />
+    </div>
+    <div class="form-group">
+      <label for="password">Password</label>
+      <input type="password" id="password" placeholder="Enter password" />
+    </div>
+    <button class="btn-login" onclick="doLogin()">Login</button>
+    <div class="msg" id="loginMsg"></div>
+
+    <div class="credentials-hint">
+      <strong>Valid credentials (for testing):</strong>
+      Username: <b>admin</b> &nbsp;|&nbsp; Password: <b>1234</b>
+    </div>
+  </div>
+
+  <!-- TEST CASES -->
+  <div class="test-section">
+    <h2>Test Cases – Login Page</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Test Case ID</th>
+          <th>Description</th>
+          <th>Steps</th>
+          <th>Expected Result</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="tc-id">TC_01</td>
+          <td>Valid Login</td>
+          <td class="steps">
+            <ol>
+              <li>Open login page</li>
+              <li>Enter valid username</li>
+              <li>Enter valid password</li>
+              <li>Click login</li>
+            </ol>
+          </td>
+          <td>User successfully logged in and redirected to dashboard</td>
+          <td id="status-tc01"><span class="badge not-executed">Not Executed</span></td>
+        </tr>
+        <tr>
+          <td class="tc-id">TC_02</td>
+          <td>Invalid Login</td>
+          <td class="steps">
+            <ol>
+              <li>Open login page</li>
+              <li>Enter invalid username/password</li>
+              <li>Click login</li>
+            </ol>
+          </td>
+          <td>Error message displayed: "Invalid credentials"</td>
+          <td id="status-tc02"><span class="badge not-executed">Not Executed</span></td>
+        </tr>
+        <tr>
+          <td class="tc-id">TC_03</td>
+          <td>Empty Fields</td>
+          <td class="steps">
+            <ol>
+              <li>Open login page</li>
+              <li>Leave username and password empty</li>
+              <li>Click login</li>
+            </ol>
+          </td>
+          <td>Validation message: "Fields cannot be empty"</td>
+          <td id="status-tc03"><span class="badge not-executed">Not Executed</span></td>
+        </tr>
+        <tr>
+          <td class="tc-id">TC_04</td>
+          <td>SQL Injection (Basic)</td>
+          <td class="steps">
+            <ol>
+              <li>Open login page</li>
+              <li>Enter <code>' OR '1'='1</code> in username</li>
+              <li>Enter any password</li>
+              <li>Click login</li>
+            </ol>
+          </td>
+          <td>Login should fail; system must prevent SQL injection and show error</td>
+          <td id="status-tc04"><span class="badge not-executed">Not Executed</span></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <button class="run-btn" onclick="runAllTests()">▶ Run All Tests</button>
+    <button class="reset-btn" onclick="resetAll()">↺ Reset</button>
+
+    <div class="summary" id="summary"></div>
+  </div>
+</div>
+
+<script>
+  // Valid credentials
+  const VALID_USER = "admin";
+  const VALID_PASS = "1234";
+
+  // ── Login logic ──
+  function doLogin() {
+    const user = document.getElementById("username").value.trim();
+    const pass = document.getElementById("password").value.trim();
+    const msg  = document.getElementById("loginMsg");
+
+    // TC_03: Empty fields
+    if (user === "" || pass === "") {
+      showMsg(msg, "warning", "⚠️ Fields cannot be empty");
+      return;
+    }
+
+    // TC_04: SQL Injection check
+    const sqlPattern = /('|--|;|OR\s+['"]?1['"]?\s*=\s*['"]?1|DROP|SELECT|INSERT|DELETE|UPDATE)/i;
+    if (sqlPattern.test(user) || sqlPattern.test(pass)) {
+      showMsg(msg, "error", "🚫 SQL Injection detected! Access denied.");
+      return;
+    }
+
+    // TC_01 & TC_02: Valid / Invalid login
+    if (user === VALID_USER && pass === VALID_PASS) {
+      showMsg(msg, "success", "✅ Login successful! Redirecting to dashboard...");
+      setTimeout(() => {
+        msg.textContent = "🏠 Welcome to the Dashboard!";
+      }, 1500);
+    } else {
+      showMsg(msg, "error", "❌ Invalid credentials. Please try again.");
+    }
+  }
+
+  function showMsg(el, type, text) {
+    el.className = "msg " + type;
+    el.textContent = text;
+  }
+
+  // ── Run All Tests automatically ──
+  function runAllTests() {
+    let pass = 0, fail = 0;
+
+    // TC_01 – Valid login
+    const r1 = testLogin(VALID_USER, VALID_PASS);
+    if (r1 === "success") {
+      setStatus("tc01", "pass", "✅ Pass");
+      pass++;
+    } else {
+      setStatus("tc01", "fail", "❌ Fail");
+      fail++;
+    }
+
+    // TC_02 – Invalid login
+    const r2 = testLogin("wronguser", "wrongpass");
+    if (r2 === "invalid") {
+      setStatus("tc02", "pass", "✅ Pass");
+      pass++;
+    } else {
+      setStatus("tc02", "fail", "❌ Fail");
+      fail++;
+    }
+
+    // TC_03 – Empty fields
+    const r3 = testLogin("", "");
+    if (r3 === "empty") {
+      setStatus("tc03", "pass", "✅ Pass");
+      pass++;
+    } else {
+      setStatus("tc03", "fail", "❌ Fail");
+      fail++;
+    }
+
+    // TC_04 – SQL Injection
+    const r4 = testLogin("' OR '1'='1", "anypassword");
+    if (r4 === "sql") {
+      setStatus("tc04", "pass", "✅ Pass");
+      pass++;
+    } else {
+      setStatus("tc04", "fail", "❌ Fail");
+      fail++;
+    }
+
+    // Summary
+    const summary = document.getElementById("summary");
+    summary.style.display = "block";
+    summary.innerHTML = `
+      Test Results: &nbsp;
+      <span class="s-pass">✅ Passed: <span>${pass}</span></span> &nbsp;|&nbsp;
+      <span class="s-fail">❌ Failed: <span>${fail}</span></span> &nbsp;|&nbsp;
+      Total: <span>${pass + fail}</span>
+    `;
+  }
+
+  // ── Logic engine (same as doLogin but returns a result) ──
+  function testLogin(user, pass) {
+    if (user.trim() === "" || pass.trim() === "") return "empty";
+
+    const sqlPattern = /('|--|;|OR\s+['"]?1['"]?\s*=\s*['"]?1|DROP|SELECT|INSERT|DELETE|UPDATE)/i;
+    if (sqlPattern.test(user) || sqlPattern.test(pass)) return "sql";
+
+    if (user === VALID_USER && pass === VALID_PASS) return "success";
+    return "invalid";
+  }
+
+  function setStatus(id, type, label) {
+    document.getElementById("status-" + id).innerHTML =
+      `<span class="badge ${type}">${label}</span>`;
+  }
+
+  function resetAll() {
+    ["tc01","tc02","tc03","tc04"].forEach(id => {
+      setStatus(id, "not-executed", "Not Executed");
+    });
+    const msg = document.getElementById("loginMsg");
+    msg.className = "msg";
+    msg.textContent = "";
+    document.getElementById("username").value = "";
+    document.getElementById("password").value = "";
+    document.getElementById("summary").style.display = "none";
+  }
+
+  // Allow pressing Enter to login
+  document.addEventListener("keydown", e => {
+    if (e.key === "Enter") doLogin();
+  });
+</script>
+</body>
+</html>
